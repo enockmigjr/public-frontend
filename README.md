@@ -51,3 +51,6 @@ Autoriser exactement `https://support.example.com` dans `script-src`, `frame-src
 hôte. La réponse du chargeur porte un CORS public uniquement parce que cet asset immuable ne contient aucun secret.
 Après chaque modification du fichier versionné, publier une nouvelle version et recalculer le SHA-384 ; ne jamais
 remplacer silencieusement `/widget/v1/widget.js` en production.
+
+La version `v2` accepte aussi `data-label` et `data-position="left|right"`. Son intégrité est documentée dans le
+README du connecteur WordPress, qui épingle cette version au lieu de modifier `v1`.

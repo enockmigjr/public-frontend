@@ -28,12 +28,12 @@ export function WidgetShell({ integrationKey, parentOrigin }: Props) {
         postToHost(parentOrigin, { type: "READY" });
       })
       .catch(() => setState("error"));
-    return listenToHost(parentOrigin, (assertion) => void exchangeAssertion(assertion, setState).then((accepted) => {
+    return listenToHost(parentOrigin, (assertion) => void exchangeAssertion(assertion).then((accepted) => {
       if (accepted) {
         setAuthenticated(true);
         postToHost(parentOrigin, { type: "IDENTITY_ACCEPTED" });
       }
-    }));
+    }).catch(() => setAuthenticated(false)));
   }, [integrationKey, parentOrigin]);
 
   useEffect(() => {
@@ -62,13 +62,16 @@ function isFrameAllowed(value: unknown): boolean {
   return isRecord(value) && value["success"] === true && isRecord(value["data"]) && value["data"]["frameAllowed"] === true;
 }
 
-async function exchangeAssertion(assertion: string, setState: (state: "loading" | "ready" | "blocked" | "error") => void): Promise<boolean> {
-  const csrfResponse = await fetch("/api/auth/csrf?context=widget", { cache: "no-store" });
-  const csrf: unknown = await csrfResponse.json();
-  if (!isRecord(csrf) || !isRecord(csrf["data"]) || typeof csrf["data"]["csrfToken"] !== "string") return false;
-  const response = await fetch("/api/auth/assertion/exchange", { method: "POST", headers: { "Content-Type": "application/json", "x-csrf-token": csrf["data"]["csrfToken"], "x-support-context": "widget" }, body: JSON.stringify({ assertion }) });
-  setState(response.ok ? "ready" : "error");
-  return response.ok;
+async function exchangeAssertion(assertion: string): Promise<boolean> {
+  try {
+    const csrfResponse = await fetch("/api/auth/csrf?context=widget", { cache: "no-store" });
+    const csrf: unknown = await csrfResponse.json();
+    if (!isRecord(csrf) || !isRecord(csrf["data"]) || typeof csrf["data"]["csrfToken"] !== "string") return false;
+    const response = await fetch("/api/auth/assertion/exchange", { method: "POST", headers: { "Content-Type": "application/json", "x-csrf-token": csrf["data"]["csrfToken"], "x-support-context": "widget" }, body: JSON.stringify({ assertion }) });
+    return response.ok;
+  } catch {
+    return false;
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> { return typeof value === "object" && value !== null && !Array.isArray(value); }

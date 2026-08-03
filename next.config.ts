@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/widget/v1/widget.js",
+        source: "/widget/:version/widget.js",
         headers: [
           { key: "Access-Control-Allow-Origin", value: "*" },
           { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },

@@ -1,0 +1,36 @@
+(function () {
+  "use strict";
+  var script = document.currentScript;
+  if (!script || !script.src) return;
+  var key = script.getAttribute("data-integration-key");
+  if (!key || key.length < 16) return;
+  var label = (script.getAttribute("data-label") || "Assistance").trim().slice(0, 60) || "Assistance";
+  var position = script.getAttribute("data-position") === "left" ? "left" : "right";
+  var supportOrigin = new URL(script.src).origin;
+  var frame = document.createElement("iframe");
+  var button = document.createElement("button");
+  var pendingAssertion = null;
+  var side = position + ":20px;";
+  frame.title = "Assistance et suivi des demandes";
+  frame.hidden = true;
+  frame.setAttribute("allow", "clipboard-write");
+  frame.setAttribute("sandbox", "allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox");
+  frame.src = supportOrigin + "/widget?integrationKey=" + encodeURIComponent(key) + "&parentOrigin=" + encodeURIComponent(location.origin);
+  frame.style.cssText = "position:fixed;" + side + "bottom:84px;width:min(390px,calc(100vw - 24px));height:min(520px,calc(100vh - 112px));border:1px solid rgba(15,45,70,.18);border-radius:18px;background:#fff;box-shadow:0 18px 55px rgba(15,45,70,.22);z-index:2147483646";
+  button.type = "button";
+  button.textContent = label;
+  button.setAttribute("aria-expanded", "false");
+  button.style.cssText = "position:fixed;" + side + "bottom:20px;min-height:48px;padding:0 18px;border:0;border-radius:14px;background:#18598c;color:#fff;font:600 15px system-ui;box-shadow:0 8px 24px rgba(15,45,70,.24);cursor:pointer;z-index:2147483647";
+  button.addEventListener("click", function () { frame.hidden = !frame.hidden; button.setAttribute("aria-expanded", String(!frame.hidden)); });
+  window.addEventListener("keydown", function (event) { if (event.key === "Escape" && !frame.hidden) { frame.hidden = true; button.setAttribute("aria-expanded", "false"); button.focus(); } });
+  window.addEventListener("message", function (event) {
+    if (event.origin !== supportOrigin || event.source !== frame.contentWindow || !event.data || typeof event.data.type !== "string") return;
+    if (event.data.type === "READY" && pendingAssertion) frame.contentWindow.postMessage({ type: "IDENTITY_ASSERTION", assertion: pendingAssertion }, supportOrigin);
+    if (event.data.type === "IDENTITY_ACCEPTED") pendingAssertion = null;
+    if (event.data.type === "RESIZE" && Number.isInteger(event.data.height)) frame.style.height = Math.max(320, Math.min(760, event.data.height)) + "px";
+    if (event.data.type === "OPEN_PORTAL") window.open(supportOrigin, "_blank", "noopener,noreferrer");
+  });
+  window.TelecomSupportWidget = { open: function () { frame.hidden = false; button.setAttribute("aria-expanded", "true"); }, identify: function (assertion) { if (typeof assertion === "string" && assertion.length >= 80 && assertion.length <= 8192) { pendingAssertion = assertion; if (frame.contentWindow) frame.contentWindow.postMessage({ type: "IDENTITY_ASSERTION", assertion: assertion }, supportOrigin); } } };
+  document.body.appendChild(frame);
+  document.body.appendChild(button);
+})();
