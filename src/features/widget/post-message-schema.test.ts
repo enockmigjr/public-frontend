@@ -25,6 +25,7 @@ describe("schémas postMessage", () => {
     { type: "RESIZE", height: 320 },
     { type: "RESIZE", height: 760 },
     { type: "OPEN_PORTAL" },
+    { type: "IDENTITY_ACCEPTED" },
   ])("accepte le message widget %p", (payload) => {
     expect(widgetMessageSchema.safeParse(payload).success).toBe(true);
   });

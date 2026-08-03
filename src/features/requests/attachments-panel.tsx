@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ApiError, publicApi } from "@/lib/api/client";
+import { usePublicRealtime } from "@/features/realtime/public-realtime-provider";
 
 const labels = { NOT_REQUIRED: "Disponible", QUARANTINED: "En attente", PENDING: "Analyse planifiée", SCANNING: "Analyse en cours", CLEAN: "Sain", INFECTED: "Bloqué", ERROR: "Échec de l’analyse" } as const;
 const size = (bytes: number) => bytes < 1024 * 1024 ? `${Math.ceil(bytes / 1024)} Ko` : `${(bytes / 1024 / 1024).toFixed(1)} Mo`;
@@ -15,9 +16,10 @@ const maxFileSize = 10 * 1024 * 1024;
 
 export function AttachmentsPanel({ ticketId }: { readonly ticketId: string }) {
   const input = useRef<HTMLInputElement>(null);
+  const realtime = usePublicRealtime();
   const [fileError, setFileError] = useState<string>();
   const client = useQueryClient();
-  const query = useQuery({ queryKey: ["public-attachments", ticketId], queryFn: () => publicApi.attachments(ticketId), refetchInterval: (state) => state.state.data?.data.some((item) => !["CLEAN", "INFECTED", "ERROR", "NOT_REQUIRED"].includes(item.scanStatus)) ? 5_000 : false });
+  const query = useQuery({ queryKey: ["public-attachments", ticketId], queryFn: () => publicApi.attachments(ticketId), refetchInterval: (state) => state.state.data?.data.some((item) => !["CLEAN", "INFECTED", "ERROR", "NOT_REQUIRED"].includes(item.scanStatus)) && realtime !== "connected" ? 5_000 : false });
   const upload = useMutation({ mutationFn: ({ file, key }: { readonly file: File; readonly key: string }) => publicApi.upload(ticketId, file, key), onSuccess: async () => client.invalidateQueries({ queryKey: ["public-attachments", ticketId] }) });
   return <section className="rounded-xl border bg-white p-4"><div className="flex items-center justify-between gap-3"><div><h2 className="font-semibold">Pièces jointes</h2><p className="mt-1 text-xs text-muted-foreground">PDF, image ou texte, jusqu’à 10 Mo. Chaque fichier est analysé.</p></div><input ref={input} type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.txt" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; setFileError(undefined); if (file && file.size > maxFileSize) setFileError("Le fichier dépasse la limite de 10 Mo."); else if (file && !allowedTypes.has(file.type)) setFileError("Ce type de fichier n’est pas autorisé."); else if (file) upload.mutate({ file, key: crypto.randomUUID() }); event.target.value = ""; }} /><Button type="button" variant="outline" disabled={upload.isPending} onClick={() => input.current?.click()}><Paperclip />{upload.isPending ? "Envoi…" : "Ajouter"}</Button></div>
     {fileError && <Alert variant="destructive" className="mt-3"><AlertDescription>{fileError}</AlertDescription></Alert>}

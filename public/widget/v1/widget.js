@@ -11,7 +11,7 @@
   frame.title = "Assistance et suivi des demandes";
   frame.hidden = true;
   frame.setAttribute("allow", "clipboard-write");
-  frame.setAttribute("sandbox", "allow-forms allow-scripts allow-same-origin allow-popups");
+  frame.setAttribute("sandbox", "allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox");
   frame.src = supportOrigin + "/widget?integrationKey=" + encodeURIComponent(key) + "&parentOrigin=" + encodeURIComponent(location.origin);
   frame.style.cssText = "position:fixed;right:20px;bottom:84px;width:min(390px,calc(100vw - 24px));height:min(520px,calc(100vh - 112px));border:1px solid rgba(15,45,70,.18);border-radius:18px;background:#fff;box-shadow:0 18px 55px rgba(15,45,70,.22);z-index:2147483646";
   button.type = "button";
@@ -23,10 +23,11 @@
   window.addEventListener("message", function (event) {
     if (event.origin !== supportOrigin || event.source !== frame.contentWindow || !event.data || typeof event.data.type !== "string") return;
     if (event.data.type === "READY" && pendingAssertion) frame.contentWindow.postMessage({ type: "IDENTITY_ASSERTION", assertion: pendingAssertion }, supportOrigin);
+    if (event.data.type === "IDENTITY_ACCEPTED") pendingAssertion = null;
     if (event.data.type === "RESIZE" && Number.isInteger(event.data.height)) frame.style.height = Math.max(320, Math.min(760, event.data.height)) + "px";
     if (event.data.type === "OPEN_PORTAL") window.open(supportOrigin, "_blank", "noopener,noreferrer");
   });
-  window.TelecomSupportWidget = { open: function () { frame.hidden = false; button.setAttribute("aria-expanded", "true"); }, identify: function (assertion) { if (typeof assertion === "string" && assertion.length <= 8192) { pendingAssertion = assertion; if (frame.contentWindow) frame.contentWindow.postMessage({ type: "IDENTITY_ASSERTION", assertion: assertion }, supportOrigin); } } };
+  window.TelecomSupportWidget = { open: function () { frame.hidden = false; button.setAttribute("aria-expanded", "true"); }, identify: function (assertion) { if (typeof assertion === "string" && assertion.length >= 80 && assertion.length <= 8192) { pendingAssertion = assertion; if (frame.contentWindow) frame.contentWindow.postMessage({ type: "IDENTITY_ASSERTION", assertion: assertion }, supportOrigin); } } };
   document.body.appendChild(frame);
   document.body.appendChild(button);
 })();

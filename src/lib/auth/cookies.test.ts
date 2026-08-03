@@ -38,7 +38,7 @@ describe("cookies publics", () => {
     expect(header).not.toContain("Partitioned");
   });
 
-  it("isole les cookies widget en développement avec SameSite=None", () => {
+  it("utilise un cookie widget valide en HTTP local", () => {
     const response = NextResponse.json({ success: true });
 
     setSessionCookies(response, "widget", TOKENS);
@@ -49,7 +49,7 @@ describe("cookies publics", () => {
     expect(header).toContain("support_iframe_device=device-token");
     expect(header).toContain("support_iframe_csrf=csrf-seed");
     expect(header).toContain("HttpOnly");
-    expect(header).toContain("SameSite=none");
+    expect(header).toContain("SameSite=lax");
     expect(header).not.toContain("Secure");
     expect(header).not.toContain("Partitioned");
   });

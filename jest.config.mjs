@@ -7,5 +7,6 @@ export default createJestConfig({
   testEnvironment: "jsdom",
   moduleNameMapper: { "^@/(.*)$": "<rootDir>/src/$1" },
   modulePathIgnorePatterns: ["<rootDir>/.next/"],
+  testPathIgnorePatterns: ["<rootDir>/e2e/"],
   coveragePathIgnorePatterns: ["/src/lib/api/schema.d.ts"],
 });

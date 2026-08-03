@@ -69,7 +69,7 @@ export function cookieOptionsFor(context: SupportContext, production: boolean) {
   return {
     httpOnly: true,
     secure: production,
-    sameSite: context === "widget" ? "none" : "lax",
+    sameSite: context === "widget" && production ? "none" : "lax",
     partitioned: context === "widget" && production,
     path: "/",
     priority: "high",
@@ -77,5 +77,7 @@ export function cookieOptionsFor(context: SupportContext, production: boolean) {
 }
 
 function isProduction(): boolean {
+  if (process.env["PUBLIC_COOKIE_SECURE"] === "true") return true;
+  if (process.env["PUBLIC_COOKIE_SECURE"] === "false") return false;
   return process.env["NODE_ENV"] === "production";
 }

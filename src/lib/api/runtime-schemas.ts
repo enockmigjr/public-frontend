@@ -79,13 +79,7 @@ export const catalogSchema: z.ZodType<Schemas["PublicCatalogDataDto"]> = z.objec
 });
 
 export const conversationSchema = z.object({ id: uuid, state: z.string().min(1) });
-export const challengeSchema = z.object({ challengeId: uuid });
-export const verifiedSchema = z.object({ verified: z.boolean() });
-export const restoredSchema = z.object({ restored: z.boolean() });
-export const confirmationSchema = z.object({ conversationId: uuid, ticketId: uuid, ticketNumber: z.string().min(1) });
-export const commentSchema = z.object({ id: uuid, content: z.string() });
-export const revokedSchema = z.object({ revoked: z.literal(true) });
-export const draftSavedSchema = z.object({ id: uuid, state: z.enum(["QUALIFY", "DRAFT"]), draft: z.object({
+const ticketDraftDataSchema = z.object({
   categoryId: uuid,
   title: z.string(),
   description: z.string(),
@@ -93,4 +87,24 @@ export const draftSavedSchema = z.object({ id: uuid, state: z.enum(["QUALIFY", "
   urgency: z.enum(["LOW", "MEDIUM", "HIGH"]),
   customerAccountNumber: z.string().optional(),
   serviceKey: z.string().optional(),
-}) });
+});
+export const conversationDetailSchema = z.object({
+  id: uuid,
+  state: z.string().min(1),
+  status: z.string().min(1),
+  createdAt: dateTime,
+  lastMessageAt: dateTime.nullable().optional(),
+  ticketId: uuid.nullable().optional(),
+  draft: ticketDraftDataSchema.nullable().optional(),
+});
+export const challengeSchema = z.object({ challengeId: uuid });
+export const verifiedSchema = z.object({ verified: z.boolean() });
+export const restoredSchema = z.object({ restored: z.boolean() });
+export const confirmationSchema = z.object({ conversationId: uuid, ticketId: uuid, ticketNumber: z.string().min(1) });
+export const commentSchema = z.object({ id: uuid, content: z.string() });
+export const revokedSchema = z.object({ revoked: z.literal(true) });
+export const draftSavedSchema = z.object({
+  id: uuid,
+  state: z.enum(["QUALIFY", "DRAFT"]),
+  draft: ticketDraftDataSchema,
+});

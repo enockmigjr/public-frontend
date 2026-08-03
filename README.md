@@ -14,7 +14,7 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Le portail est disponible sur `http://localhost:3000`. Renseigner dans `.env.local` une clé d’intégration publique
+Le portail est disponible sur `http://localhost:3000` (`http://localhost:3005` pendant les E2E). Renseigner dans `.env.local` une clé d’intégration publique
 réelle et un secret CSRF aléatoire d’au moins 32 caractères. Aucun secret ne doit être commité.
 
 ## Contrat et qualité
@@ -29,5 +29,25 @@ pnpm test
 pnpm build
 ```
 
-Le polling est le fallback autoritatif. Le temps réel navigateur, les E2E multi-navigateurs et le raccordement
-Docker/Nginx sont suivis dans la phase 05 du plan backend avant activation sur un site tiers.
+Le polling reste le fallback autoritatif lorsque Socket.IO est indisponible. Le déploiement Compose expose le portail
+sur `http://support.localhost` et route `/socket.io` vers NestJS. En production, utiliser un domaine HTTPS dédié et
+omettre `PUBLIC_COOKIE_SECURE=false`.
+
+## Intégration du widget
+
+Le chargeur est versionné et immuable. Remplacer le domaine et la clé publique :
+
+```html
+<script
+  src="https://support.example.com/widget/v1/widget.js"
+  data-integration-key="VOTRE_CLE_PUBLIQUE"
+  integrity="sha384-ABBH+SmuZPZwx+l7Dsu7ZQdnChdPstXFtoE+QibbQj+DN+39fSZtj6k1TpyBEd4Q"
+  crossorigin="anonymous"
+  defer
+></script>
+```
+
+Autoriser exactement `https://support.example.com` dans `script-src`, `frame-src` et `connect-src` de la CSP du site
+hôte. La réponse du chargeur porte un CORS public uniquement parce que cet asset immuable ne contient aucun secret.
+Après chaque modification du fichier versionné, publier une nouvelle version et recalculer le SHA-384 ; ne jamais
+remplacer silencieusement `/widget/v1/widget.js` en production.

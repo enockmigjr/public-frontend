@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { WidgetShell } from "@/features/widget/widget-shell";
+import { PublicRealtimeProvider } from "@/features/realtime/public-realtime-provider";
 
 interface Props {
   readonly searchParams: Promise<{ integrationKey?: string; parentOrigin?: string }>;
@@ -8,7 +9,7 @@ interface Props {
 export default async function WidgetPage({ searchParams }: Props) {
   const { integrationKey, parentOrigin } = await searchParams;
   if (!integrationKey || integrationKey.length < 16 || !validOrigin(parentOrigin)) notFound();
-  return <WidgetShell integrationKey={integrationKey} parentOrigin={parentOrigin} />;
+  return <PublicRealtimeProvider context="widget"><WidgetShell integrationKey={integrationKey} parentOrigin={parentOrigin} /></PublicRealtimeProvider>;
 }
 
 function validOrigin(value: string | undefined): value is string {

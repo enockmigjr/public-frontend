@@ -54,4 +54,4 @@ function frameAllowed(value: unknown): boolean {
 
 function isRecord(value: unknown): value is Record<string, unknown> { return typeof value === "object" && value !== null && !Array.isArray(value); }
 
-export const config = { matcher: ["/((?!api|_next/static|_next/image|favicon.ico|widget.js).*)"] };
+export const config = { matcher: ["/((?!api|_next/static|_next/image|favicon.ico|widget/v1/widget.js).*)"] };

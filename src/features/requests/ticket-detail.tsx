@@ -10,11 +10,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { publicApi } from "@/lib/api/client";
 import { TicketTimeline } from "@/features/timeline/timeline";
 import { AttachmentsPanel } from "./attachments-panel";
+import { publicPollingInterval } from "@/features/realtime/public-realtime";
+import { usePublicRealtime } from "@/features/realtime/public-realtime-provider";
 
 const date = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: "short" });
 
 export function TicketDetail({ ticketId }: { readonly ticketId: string }) {
-  const query = useQuery({ queryKey: ["public-ticket", ticketId], queryFn: () => publicApi.ticket(ticketId), refetchInterval: 30_000 });
+  const realtime = usePublicRealtime();
+  const query = useQuery({ queryKey: ["public-ticket", ticketId], queryFn: () => publicApi.ticket(ticketId), refetchInterval: (state) => publicPollingInterval(realtime, state.state.fetchFailureCount) });
   if (query.isLoading) return <LoadingState label="Chargement de la demande…" />;
   if (query.error) return <ErrorState message={query.error.message} retry={() => query.refetch()} />;
   const ticket = query.data?.data;
