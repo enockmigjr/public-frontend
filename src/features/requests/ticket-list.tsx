@@ -18,7 +18,7 @@ export function TicketList() {
     return <ErrorState message={query.error.message} retry={() => query.refetch()} />;
   }
   const tickets = query.data?.data ?? [];
-  if (!tickets.length && page === 1) return <div><EmptyState title="Aucune demande pour le moment" description="Créez votre première demande : notre équipe pourra la qualifier et vous tenir informé ici." /><Link href="/nouvelle-demande" className="mx-auto mt-4 flex w-fit rounded-lg bg-sky-700 px-4 py-2 text-sm font-medium text-white">Créer une demande</Link></div>;
+  if (!tickets.length && page === 1) return <div><EmptyState title="Aucune demande pour le moment" description="Créez votre première demande : notre équipe pourra la qualifier et vous tenir informé ici." /><Link href="/nouvelle-demande" className="mx-auto mt-4 flex w-fit rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white">Créer une demande</Link></div>;
   const meta = query.data?.meta;
   return <div className="space-y-3">{tickets.map((ticket) => <TicketCard key={ticket.id} ticket={ticket} />)}<div className="flex items-center justify-between pt-4"><p className="text-sm text-muted-foreground">Page {meta?.page ?? page}{meta?.totalPages ? ` sur ${meta.totalPages}` : ""}</p><div className="flex gap-2"><Button variant="outline" disabled={page <= 1 || query.isFetching} onClick={() => setPage((value) => value - 1)}><ChevronLeft />Précédent</Button><Button variant="outline" disabled={query.isFetching || (meta ? page >= meta.totalPages : tickets.length < 10)} onClick={() => setPage((value) => value + 1)}>Suivant<ChevronRight /></Button></div></div></div>;
 }
