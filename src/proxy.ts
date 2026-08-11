@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { isLocalDev, isLocalDevOrigin } from "@/lib/origins";
 
 export async function proxy(request: NextRequest) {
   const nonce = Buffer.from(randomUUID()).toString("base64");
@@ -40,20 +41,6 @@ async function widgetFrameAncestor(request: NextRequest): Promise<string> {
     return isLocalDev() && isLocalDevOrigin(parentOrigin) ? parentOrigin : "'none'";
   } catch {
     return isLocalDev() && isLocalDevOrigin(parentOrigin) ? parentOrigin : "'none'";
-  }
-}
-
-/** Repli de développement : autorise le framing depuis n'importe quelle origine locale. */
-function isLocalDev(): boolean {
-  return process.env.PUBLIC_COOKIE_SECURE !== "true";
-}
-
-function isLocalDevOrigin(origin: string): boolean {
-  try {
-    const url = new URL(origin);
-    return ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
-  } catch {
-    return false;
   }
 }
 

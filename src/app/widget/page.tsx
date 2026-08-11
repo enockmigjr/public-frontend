@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { isLocalDevOrigin } from "@/lib/origins";
 import { WidgetShell } from "@/features/widget/widget-shell";
 import { PublicRealtimeProvider } from "@/features/realtime/public-realtime-provider";
 
@@ -16,6 +17,6 @@ function validOrigin(value: string | undefined): value is string {
   if (!value) return false;
   try {
     const url = new URL(value);
-    return url.origin === value && (url.protocol === "https:" || (url.protocol === "http:" && url.hostname === "localhost"));
+    return url.origin === value && (url.protocol === "https:" || isLocalDevOrigin(value));
   } catch { return false; }
 }
