@@ -9,6 +9,8 @@ const UUID = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-
 const SAFE_SEGMENT = /^[A-Za-z0-9-]+$/;
 const RULES: ReadonlyArray<{ method: string; pattern: RegExp; policy: PublicRoutePolicy }> = [
   rule("GET", "catalog"),
+  rule("GET", "knowledge/search"),
+  rule("GET", "knowledge/[a-z0-9-]+"),
   rule("GET", "preferences"),
   rule("PATCH", "preferences", "json", "required"),
   rule("GET", "tickets"),

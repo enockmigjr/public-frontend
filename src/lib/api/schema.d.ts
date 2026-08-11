@@ -226,6 +226,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/public-support/knowledge/{slug}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Consulter un article public par slug */
+    get: operations['PublicKnowledgeController_findBySlug'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/public-support/knowledge/search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Rechercher des articles publics de cette intégration */
+    get: operations['PublicKnowledgeController_search'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/public-support/preferences': {
     parameters: {
       query?: never;
@@ -533,6 +567,16 @@ export interface components {
       statusCode: number;
       /** @enum {boolean} */
       success: true;
+    };
+    KnowledgeSearchResultDto: {
+      content: string;
+      id: string;
+      language: string;
+      slug: string;
+      summary?: string | null;
+      title: string;
+      /** Format: date-time */
+      updatedAt: string;
     };
     PublicAppearanceDto: {
       accentColor?: string;
@@ -1322,6 +1366,91 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['VerificationRequestResponseDto'];
+        };
+      };
+      /** @description Erreur standardisée. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiErrorResponse'];
+        };
+      };
+    };
+  };
+  PublicKnowledgeController_findBySlug: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Article trouvé. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['KnowledgeSearchResultDto'];
+            message?: string;
+            statusCode: number;
+            /** @enum {boolean} */
+            success: true;
+          };
+        };
+      };
+      /** @description Article indisponible pour cette intégration. */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiErrorResponse'];
+        };
+      };
+      /** @description Erreur standardisée. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiErrorResponse'];
+        };
+      };
+    };
+  };
+  PublicKnowledgeController_search: {
+    parameters: {
+      query: {
+        /** @description Termes de recherche. */
+        q: string;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Résultats de recherche. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['KnowledgeSearchResultDto'][];
+            message?: string;
+            statusCode: number;
+            /** @enum {boolean} */
+            success: true;
+          };
         };
       };
       /** @description Erreur standardisée. */

@@ -17,6 +17,7 @@ import {
   ticketDetailSchema,
   ticketSchema,
   timelineEntrySchema,
+  knowledgeSearchResultSchema,
   trustedDeviceSchema,
   verifiedSchema,
 } from "@/lib/api/runtime-schemas";
@@ -118,6 +119,8 @@ function createPublicApi(context: SupportContext) {
     revokeDevice: (id: string) => request(context, `/api/public/session/devices/${id}`, revokedSchema, { method: "DELETE" }, true),
     forgetCurrentDevice: () => request(context, "/api/auth/session/revoke-device", revokedSchema, { method: "POST" }, true),
     upload: (id: string, file: File, key: string) => { const body = new FormData(); body.set("file", file); return request(context, `/api/public/tickets/${id}/attachments`, attachmentSchema, { method: "POST", headers: mutationHeaders(key, false), body }, true); },
+    knowledgeSearch: (q: string, limit = 5) => request(context, `/api/public/knowledge/search?q=${encodeURIComponent(q)}&limit=${limit}`, z.array(knowledgeSearchResultSchema)),
+    knowledgeArticle: (slug: string) => request(context, `/api/public/knowledge/${slug}`, knowledgeSearchResultSchema),
   };
 }
 

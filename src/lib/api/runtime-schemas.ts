@@ -78,6 +78,16 @@ export const catalogSchema: z.ZodType<Schemas["PublicCatalogDataDto"]> = z.objec
   services: z.array(z.object({ key: z.string().min(1), label: z.string().min(1) })),
 });
 
+export const knowledgeSearchResultSchema: z.ZodType<Schemas["KnowledgeSearchResultDto"]> = z.object({
+  id: uuid,
+  slug: z.string().min(1),
+  title: z.string().min(1),
+  summary: z.string().nullable().optional(),
+  content: z.string().min(1),
+  language: z.string().min(1),
+  updatedAt: dateTime,
+});
+
 export const conversationSchema = z.object({ id: uuid, state: z.string().min(1) });
 const ticketDraftDataSchema = z.object({
   categoryId: uuid,
