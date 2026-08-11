@@ -109,6 +109,8 @@ function createPublicApi(context: SupportContext) {
     ticket: (id: string) => request(context, `/api/public/tickets/${id}`, ticketDetailSchema),
     timeline: (id: string) => request(context, `/api/public/tickets/${id}/timeline`, z.array(timelineEntrySchema)),
     attachments: (id: string) => request(context, `/api/public/tickets/${id}/attachments`, z.array(attachmentSchema)),
+    conversationAttachments: (id: string) =>
+      request(context, `/api/public/conversations/${id}/attachments`, z.array(attachmentSchema)),
     preferences: () => request(context, "/api/public/preferences", preferencesSchema.nullable()),
     devices: () => request(context, "/api/public/session/devices", z.array(trustedDeviceSchema)),
     createConversation: (key: string, serviceKey?: string) => request(context, "/api/public/conversations", conversationSchema, { method: "POST", headers: mutationHeaders(key), body: JSON.stringify({ ...(serviceKey ? { serviceKey } : {}) }) }, true),
@@ -120,6 +122,13 @@ function createPublicApi(context: SupportContext) {
     revokeDevice: (id: string) => request(context, `/api/public/session/devices/${id}`, revokedSchema, { method: "DELETE" }, true),
     forgetCurrentDevice: () => request(context, "/api/auth/session/revoke-device", revokedSchema, { method: "POST" }, true),
     upload: (id: string, file: File, key: string) => { const body = new FormData(); body.set("file", file); return request(context, `/api/public/tickets/${id}/attachments`, attachmentSchema, { method: "POST", headers: mutationHeaders(key, false), body }, true); },
+    conversationUpload: (id: string, file: File, key: string) => {
+      const body = new FormData();
+      body.set("file", file);
+      return request(context, `/api/public/conversations/${id}/attachments`, attachmentSchema, { method: "POST", headers: mutationHeaders(key, false), body }, true);
+    },
+    conversationAttachmentStatus: (id: string, attachmentId: string) =>
+      request(context, `/api/public/conversations/${id}/attachments/${attachmentId}/status`, attachmentSchema),
     knowledgeSearch: (q: string, limit = 5) => request(context, `/api/public/knowledge/search?q=${encodeURIComponent(q)}&limit=${limit}`, z.array(knowledgeSearchResultSchema)),
     knowledgeArticle: (slug: string) => request(context, `/api/public/knowledge/${slug}`, knowledgeSearchResultSchema),
     botReply: (conversationId: string, message: string, key: string) => request(context, `/api/public/conversations/${conversationId}/bot`, botReplySchema, { method: "POST", headers: mutationHeaders(key), body: JSON.stringify({ message }) }, true),
