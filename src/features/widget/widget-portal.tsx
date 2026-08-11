@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, CirclePlus, ExternalLink, MessageSquare } from "lucide-react";
+import { ArrowLeft, Bot, CirclePlus, ExternalLink, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -9,22 +9,31 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ApiError, widgetApi } from "@/lib/api/client";
 import { statusLabel } from "@/components/portal/status";
+import { AssistantPanel } from "@/features/conversation/assistant-panel";
 import { WidgetRequestForm } from "./widget-request-form";
 
-type View = { readonly kind: "list" } | { readonly kind: "create" } | { readonly kind: "detail"; readonly id: string };
+type View = { readonly kind: "list" } | { readonly kind: "create" } | { readonly kind: "assistant" } | { readonly kind: "detail"; readonly id: string };
 const date = new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium", timeStyle: "short" });
 
 export function WidgetPortal({ onOpenPortal, onSessionExpired }: { readonly onOpenPortal: () => void; readonly onSessionExpired: () => void }) {
   const [view, setView] = useState<View>({ kind: "list" });
   if (view.kind === "create") return <WidgetRequestForm onCancel={() => setView({ kind: "list" })} onCreated={(id) => setView({ kind: "detail", id })} />;
+  if (view.kind === "assistant") {
+    return (
+      <div>
+        <Button variant="ghost" size="sm" className="mb-3" onClick={() => setView({ kind: "list" })}><ArrowLeft />Mes demandes</Button>
+        <AssistantPanel compact api={widgetApi} onOpenForm={() => setView({ kind: "create" })} />
+      </div>
+    );
+  }
   if (view.kind === "detail") return <WidgetTicket id={view.id} onBack={() => setView({ kind: "list" })} onSessionExpired={onSessionExpired} />;
-  return <WidgetTicketList onCreate={() => setView({ kind: "create" })} onSelect={(id) => setView({ kind: "detail", id })} onOpenPortal={onOpenPortal} onSessionExpired={onSessionExpired} />;
+  return <WidgetTicketList onCreate={() => setView({ kind: "create" })} onAssistant={() => setView({ kind: "assistant" })} onSelect={(id) => setView({ kind: "detail", id })} onOpenPortal={onOpenPortal} onSessionExpired={onSessionExpired} />;
 }
 
-function WidgetTicketList({ onCreate, onSelect, onOpenPortal, onSessionExpired }: { readonly onCreate: () => void; readonly onSelect: (id: string) => void; readonly onOpenPortal: () => void; readonly onSessionExpired: () => void }) {
+function WidgetTicketList({ onCreate, onAssistant, onSelect, onOpenPortal, onSessionExpired }: { readonly onCreate: () => void; readonly onAssistant: () => void; readonly onSelect: (id: string) => void; readonly onOpenPortal: () => void; readonly onSessionExpired: () => void }) {
   const query = useQuery({ queryKey: ["widget-tickets"], queryFn: () => widgetApi.tickets(1) });
   if (query.error instanceof ApiError && query.error.status === 401) return <SessionExpired onContinue={onSessionExpired} />;
-  return <div><div className="mb-4 flex gap-2"><Button className="flex-1" onClick={onCreate}><CirclePlus />Nouvelle demande</Button><Button variant="outline" size="icon" aria-label="Ouvrir le portail complet" onClick={onOpenPortal}><ExternalLink /></Button></div>{query.isLoading && <p className="py-8 text-center text-sm text-muted-foreground">Chargement des demandes…</p>}{query.error && <Alert variant="destructive"><AlertDescription>Impossible de charger vos demandes.</AlertDescription></Alert>}<div className="space-y-2">{query.data?.data.map((ticket) => <button type="button" key={ticket.id} onClick={() => onSelect(ticket.id)} className="w-full rounded-lg border bg-white p-3 text-left hover:bg-muted"><div className="flex items-center justify-between gap-2"><strong className="truncate text-sm">{ticket.title}</strong><Badge variant="outline">{statusLabel(ticket.status)}</Badge></div><p className="mt-1 text-xs text-muted-foreground">{ticket.ticketNumber} · {date.format(new Date(ticket.updatedAt))}</p></button>)}{query.data?.data.length === 0 && <p className="rounded-lg border border-dashed p-5 text-center text-sm text-muted-foreground">Aucune demande pour le moment.</p>}</div></div>;
+  return <div><div className="mb-4 flex gap-2"><Button className="flex-1" onClick={onCreate}><CirclePlus />Nouvelle demande</Button><Button variant="outline" size="icon" aria-label="Assistant" onClick={onAssistant}><Bot /></Button><Button variant="outline" size="icon" aria-label="Ouvrir le portail complet" onClick={onOpenPortal}><ExternalLink /></Button></div>{query.isLoading && <p className="py-8 text-center text-sm text-muted-foreground">Chargement des demandes…</p>}{query.error && <Alert variant="destructive"><AlertDescription>Impossible de charger vos demandes.</AlertDescription></Alert>}<div className="space-y-2">{query.data?.data.map((ticket) => <button type="button" key={ticket.id} onClick={() => onSelect(ticket.id)} className="w-full rounded-lg border bg-white p-3 text-left hover:bg-muted"><div className="flex items-center justify-between gap-2"><strong className="truncate text-sm">{ticket.title}</strong><Badge variant="outline">{statusLabel(ticket.status)}</Badge></div><p className="mt-1 text-xs text-muted-foreground">{ticket.ticketNumber} · {date.format(new Date(ticket.updatedAt))}</p></button>)}{query.data?.data.length === 0 && <p className="rounded-lg border border-dashed p-5 text-center text-sm text-muted-foreground">Aucune demande pour le moment.</p>}</div></div>;
 }
 
 function WidgetTicket({ id, onBack, onSessionExpired }: { readonly id: string; readonly onBack: () => void; readonly onSessionExpired: () => void }) {
