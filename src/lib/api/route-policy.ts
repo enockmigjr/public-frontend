@@ -19,6 +19,7 @@ const RULES: ReadonlyArray<{ method: string; pattern: RegExp; policy: PublicRout
   rule("PATCH", `conversations/${UUID}/draft`, "json", "optional"),
   rule("POST", `conversations/${UUID}/confirm`, "json", "required"),
   rule("POST", `conversations/${UUID}/handoff`, "json", "required"),
+  rule("POST", `conversations/${UUID}/bot`, "json", "required"),
   rule("GET", `conversations/${UUID}/attachments`),
   rule("POST", `conversations/${UUID}/attachments`, "multipart", "required"),
   rule("GET", `conversations/${UUID}/attachments/${UUID}/status`),

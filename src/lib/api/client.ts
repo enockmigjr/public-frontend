@@ -3,6 +3,7 @@ import type { SupportContext } from "@/lib/auth/support-context";
 import { z } from "zod";
 import {
   attachmentSchema,
+  botReplySchema,
   catalogSchema,
   challengeSchema,
   commentSchema,
@@ -121,6 +122,7 @@ function createPublicApi(context: SupportContext) {
     upload: (id: string, file: File, key: string) => { const body = new FormData(); body.set("file", file); return request(context, `/api/public/tickets/${id}/attachments`, attachmentSchema, { method: "POST", headers: mutationHeaders(key, false), body }, true); },
     knowledgeSearch: (q: string, limit = 5) => request(context, `/api/public/knowledge/search?q=${encodeURIComponent(q)}&limit=${limit}`, z.array(knowledgeSearchResultSchema)),
     knowledgeArticle: (slug: string) => request(context, `/api/public/knowledge/${slug}`, knowledgeSearchResultSchema),
+    botReply: (conversationId: string, message: string, key: string) => request(context, `/api/public/conversations/${conversationId}/bot`, botReplySchema, { method: "POST", headers: mutationHeaders(key), body: JSON.stringify({ message }) }, true),
   };
 }
 

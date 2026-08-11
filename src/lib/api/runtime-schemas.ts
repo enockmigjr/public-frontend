@@ -88,6 +88,12 @@ export const knowledgeSearchResultSchema: z.ZodType<Schemas["KnowledgeSearchResu
   updatedAt: dateTime,
 });
 
+export const botReplySchema = z.object({
+  mode: z.enum(["disabled", "unavailable", "reply"]),
+  reply: z.string().nullable(),
+  suggestedActions: z.array(z.string()),
+});
+
 export const conversationSchema = z.object({ id: uuid, state: z.string().min(1) });
 const ticketDraftDataSchema = z.object({
   categoryId: uuid,

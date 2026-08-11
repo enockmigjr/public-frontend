@@ -124,6 +124,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/public-support/conversations/{id}/bot': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Envoyer un message au bot de la conversation
+     * @description Répond avec le mode disabled/unavailable tant qu’aucun fournisseur IA n’est configuré : le formulaire reste le chemin de création.
+     */
+    post: operations['SupportBotController_reply'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/public-support/conversations/{id}/confirm': {
     parameters: {
       query?: never;
@@ -536,6 +556,16 @@ export interface components {
       statusCode: number;
       /** @enum {boolean} */
       success: true;
+    };
+    BotMessageDto: {
+      /** @example Ma ligne coupe depuis hier. */
+      message: string;
+    };
+    BotReplyDto: {
+      /** @enum {string} */
+      mode: 'disabled' | 'unavailable' | 'reply';
+      reply?: Record<string, never> | null;
+      suggestedActions: string[];
     };
     ConfirmPublicTicketDto: {
       /** @example true */
@@ -1162,6 +1192,68 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['PublicConversationDetailResponseDto'];
+        };
+      };
+      /** @description Erreur standardisée. */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiErrorResponse'];
+        };
+      };
+    };
+  };
+  SupportBotController_reply: {
+    parameters: {
+      query?: never;
+      header: {
+        /** @description Clé unique de 1 à 128 caractères, obligatoire pour cette mutation. */
+        'Idempotency-Key': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BotMessageDto'];
+      };
+    };
+    responses: {
+      /** @description Réponse du bot. */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            data: components['schemas']['BotReplyDto'];
+            message?: string;
+            statusCode: number;
+            /** @enum {boolean} */
+            success: true;
+          };
+        };
+      };
+      /** @description Conversation introuvable. */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiErrorResponse'];
+        };
+      };
+      /** @description Conversation finalisée. */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ApiErrorResponse'];
         };
       };
       /** @description Erreur standardisée. */
