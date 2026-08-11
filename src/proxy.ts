@@ -36,8 +36,25 @@ async function widgetFrameAncestor(request: NextRequest): Promise<string> {
       signal: AbortSignal.timeout(2_000),
     });
     const payload: unknown = await response.json();
-    return response.ok && frameAllowed(payload) ? parentOrigin : "'none'";
-  } catch { return "'none'"; }
+    if (response.ok && frameAllowed(payload)) return parentOrigin;
+    return isLocalDev() && isLocalDevOrigin(parentOrigin) ? parentOrigin : "'none'";
+  } catch {
+    return isLocalDev() && isLocalDevOrigin(parentOrigin) ? parentOrigin : "'none'";
+  }
+}
+
+/** Repli de développement : autorise le framing depuis n'importe quelle origine locale. */
+function isLocalDev(): boolean {
+  return process.env.PUBLIC_COOKIE_SECURE !== "true";
+}
+
+function isLocalDevOrigin(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    return ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
+  } catch {
+    return false;
+  }
 }
 
 function exactOrigin(value: string | null): string | null {
