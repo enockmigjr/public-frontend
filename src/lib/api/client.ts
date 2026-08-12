@@ -118,6 +118,8 @@ function createPublicApi(context: SupportContext) {
     saveDraft: (id: string, draft: TicketDraft) => request(context, `/api/public/conversations/${id}/draft`, draftSavedSchema, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(draft) }, true),
     confirm: (id: string, key: string) => request(context, `/api/public/conversations/${id}/confirm`, confirmationSchema, { method: "POST", headers: mutationHeaders(key), body: JSON.stringify({ confirmed: true }) }, true),
     comment: (id: string, content: string, key: string) => request(context, `/api/public/tickets/${id}/comments`, commentSchema, { method: "POST", headers: mutationHeaders(key), body: JSON.stringify({ content }) }, true),
+    submitSatisfaction: (id: string, token: string, note: number, comment?: string) =>
+      request(context, `/api/public/tickets/${id}/satisfaction`, z.object({ message: z.string() }).passthrough(), { method: "POST", headers: mutationHeaders(token), body: JSON.stringify({ token, note, comment }) }, true),
     updatePreferences: (value: { displayName?: string; locale?: string }, key: string) => request(context, "/api/public/preferences", preferencesSchema.nullable(), { method: "PATCH", headers: mutationHeaders(key), body: JSON.stringify(value) }, true),
     revokeDevice: (id: string) => request(context, `/api/public/session/devices/${id}`, revokedSchema, { method: "DELETE" }, true),
     forgetCurrentDevice: () => request(context, "/api/auth/session/revoke-device", revokedSchema, { method: "POST" }, true),

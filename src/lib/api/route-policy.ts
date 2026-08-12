@@ -27,6 +27,7 @@ const RULES: ReadonlyArray<{ method: string; pattern: RegExp; policy: PublicRout
   rule("GET", `tickets/${UUID}`),
   rule("GET", `tickets/${UUID}/timeline`),
   rule("POST", `tickets/${UUID}/comments`, "json", "required"),
+  rule("POST", `tickets/${UUID}/satisfaction`, "json", "required"),
   rule("GET", `tickets/${UUID}/attachments`),
   rule("POST", `tickets/${UUID}/attachments`, "multipart", "required"),
   rule("GET", `tickets/${UUID}/attachments/${UUID}/status`),
