@@ -22,7 +22,7 @@ export default async function Home({ searchParams }: Props) {
           <span className="hidden text-xs text-muted-foreground sm:block">Support client sécurisé — sans compte requis</span>
         </div>
       </header>
-      <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_420px] lg:gap-16 lg:py-16">
+      <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-16 lg:py-16">
         <section>
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">Support client sécurisé</p>
           <h1 className="max-w-2xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">Signalez un incident. Suivez sa résolution sans friction.</h1>

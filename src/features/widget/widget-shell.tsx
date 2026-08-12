@@ -43,7 +43,7 @@ export function WidgetShell({ integrationKey, parentOrigin }: Props) {
   if (state === "loading") return <StatePanel icon={<LoaderCircle className="size-5 animate-spin" />} text="Ouverture du support…" />;
   if (state === "blocked") return <StatePanel icon={<ShieldCheck className="size-5" />} text="Ce site n’est pas autorisé à afficher ce support." />;
   if (state === "error") return <StatePanel icon={<LifeBuoy className="size-5" />} text="Le support est temporairement indisponible." />;
-  return <main className="flex min-h-dvh flex-col bg-background p-4">
+  return <main className="flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain bg-background p-4">
       <div className="mb-5 flex items-center gap-3">
         <span className="grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground"><LifeBuoy /></span>
         <div><p className="font-semibold">Assistance</p><p className="text-xs text-muted-foreground">Canal sécurisé</p></div>
