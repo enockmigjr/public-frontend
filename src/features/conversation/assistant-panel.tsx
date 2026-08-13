@@ -13,7 +13,12 @@ interface ChatMessage {
 }
 
 export function AssistantPanel(
-  props: Readonly<{ api?: PublicApi; onOpenForm?: () => void; compact?: boolean }>,
+  props: Readonly<{
+    api?: PublicApi;
+    onOpenForm?: () => void;
+    onSessionExpired?: () => void;
+    compact?: boolean;
+  }>,
 ) {
   const api = props.api ?? publicApi;
   const [conversationId, setConversationId] = useState<string>();
@@ -42,7 +47,11 @@ export function AssistantPanel(
             : result.data.reply ?? 'Le formulaire reste disponible.';
       setMessages((current) => [...current, { role: result.data.mode === 'reply' ? 'bot' : 'system', content: guidance }]);
     } catch (reason) {
-      setError(reason instanceof ApiError ? reason.message : "L’assistant est indisponible. Utilisez le formulaire.");
+      if (reason instanceof ApiError && reason.status === 401) {
+        props.onSessionExpired?.();
+        return;
+      }
+      setError(reason instanceof ApiError ? reason.message : "L'assistant est indisponible. Utilisez le formulaire.");
     } finally {
       setPending(false);
     }
@@ -55,7 +64,7 @@ export function AssistantPanel(
           Décrivez votre problème : l’assistant peut vous orienter avant la création.
         </p>
       ) : (
-        <ul className="max-h-72 space-y-2 overflow-y-auto pr-1" aria-live="polite">
+        <ul className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1" aria-live="polite">
           {messages.map((message, index) => (
             <li
               key={`${message.role}-${index}`}
@@ -106,7 +115,7 @@ export function AssistantPanel(
   );
 
   if (props.compact) {
-    return <div className="space-y-3">{content}</div>;
+    return <div className="flex min-h-0 flex-1 flex-col gap-3">{content}</div>;
   }
   return (
     <Card className="mb-6">

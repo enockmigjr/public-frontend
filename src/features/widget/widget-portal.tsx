@@ -20,9 +20,9 @@ export function WidgetPortal({ onOpenPortal, onSessionExpired }: { readonly onOp
   if (view.kind === "create") return <WidgetRequestForm onCancel={() => setView({ kind: "list" })} onCreated={(id) => setView({ kind: "detail", id })} />;
   if (view.kind === "assistant") {
     return (
-      <div>
+      <div className="flex h-full min-h-0 flex-col overflow-y-auto">
         <Button variant="ghost" size="sm" className="mb-3" onClick={() => setView({ kind: "list" })}><ArrowLeft />Mes demandes</Button>
-        <AssistantPanel compact api={widgetApi} onOpenForm={() => setView({ kind: "create" })} />
+        <AssistantPanel compact api={widgetApi} onOpenForm={() => setView({ kind: "create" })} onSessionExpired={onSessionExpired} />
       </div>
     );
   }
