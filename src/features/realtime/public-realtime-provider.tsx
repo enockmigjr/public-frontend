@@ -29,6 +29,14 @@ export function PublicRealtimeProvider({ children, context }: { readonly childre
       }
     };
     const unavailable = () => setState("polling");
+    // Repli sans WebSocket (cookies tiers bloqués en iframe, réseau, etc.) :
+    // rafraîchit périodiquement pour que les réponses apparaissent sans rechargement.
+    const polling = window.setInterval(() => {
+      if (socket.connected) return;
+      for (const queryKey of [["public-tickets"], ["public-ticket"], ["public-timeline"], ["public-attachments"], ["widget-tickets"], ["widget-ticket"], ["widget-timeline"]]) {
+        void queryClient.invalidateQueries({ queryKey });
+      }
+    }, 30_000);
     const refresh = (value: unknown) => {
       const event = publicRefreshSchema.safeParse(value);
       if (!event.success) return;
@@ -45,6 +53,7 @@ export function PublicRealtimeProvider({ children, context }: { readonly childre
       socket.off("connect_error", unavailable);
       socket.off("public.refresh", refresh);
       socket.disconnect();
+      window.clearInterval(polling);
     };
   }, [queryClient, socket]);
 
