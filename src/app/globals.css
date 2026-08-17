@@ -166,3 +166,13 @@ textarea {
   border-radius: 999px;
   background-clip: padding-box;
 }
+
+/* Bandeau de navigation mobile : défilement fluide sans barre visible. */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

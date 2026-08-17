@@ -20,10 +20,10 @@ export function PortalShell({ children }: { readonly children: ReactNode }) {
   const pathname = usePathname();
   const realtime = usePublicRealtime();
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="flex min-h-dvh flex-col overflow-x-clip bg-background text-foreground">
       <OfflineNotice />
       <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
-        <div className="flex h-16 w-full items-center justify-between gap-3 px-5 sm:px-8 lg:px-12">
+        <div className="flex h-14 w-full items-center justify-between gap-3 px-4 sm:h-16 sm:px-8 lg:px-12">
           <Brand href="/demandes" />
           <div className="flex items-center gap-3">
             <span className="hidden items-center gap-1.5 text-xs text-muted-foreground md:flex" role="status">
@@ -34,9 +34,9 @@ export function PortalShell({ children }: { readonly children: ReactNode }) {
           </div>
         </div>
       </header>
-      <div className="grid w-full gap-6 px-5 py-5 sm:px-8 lg:grid-cols-[230px_minmax(0,1fr)] lg:gap-12 lg:px-12 lg:py-10 xl:grid-cols-[260px_minmax(0,1fr)]">
-        <aside className="overflow-x-auto lg:overflow-visible">
-          <nav aria-label="Navigation de l’espace demandeur" className="flex min-w-max gap-1 lg:min-w-0 lg:flex-col lg:rounded-2xl lg:border lg:bg-card lg:p-2">
+      <div className="grid w-full flex-1 items-start gap-4 px-4 py-5 sm:gap-6 sm:px-8 lg:grid-cols-[230px_minmax(0,1fr)] lg:gap-12 lg:px-12 lg:py-10 xl:grid-cols-[260px_minmax(0,1fr)]">
+        <aside className="no-scrollbar min-w-0 max-w-full overflow-x-auto lg:overflow-visible">
+          <nav aria-label="Navigation de l’espace demandeur" className="flex w-max gap-1 rounded-xl p-1 lg:w-auto lg:min-w-0 lg:flex-col lg:rounded-2xl lg:border lg:bg-card lg:p-2">
             {links.map(({ href, label, icon: Icon }) => {
               const active = pathname === href || pathname.startsWith(`${href}/`);
               return (
@@ -53,7 +53,7 @@ export function PortalShell({ children }: { readonly children: ReactNode }) {
             })}
           </nav>
         </aside>
-        <main className="min-w-0">{children}</main>
+        <main className="min-w-0 w-full">{children}</main>
       </div>
     </div>
   );
