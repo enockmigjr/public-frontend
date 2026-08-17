@@ -95,7 +95,7 @@ export function AssistantPanel(
           placeholder="Ex. Ma ligne coupe depuis hier…"
           aria-label="Message pour l’assistant"
         />
-        <Button type="submit" disabled={!input.trim() || pending} className="shrink-0">
+        <Button type="submit" aria-label="Message assistant" disabled={!input.trim() || pending} className="shrink-0">
           <Send className="size-4" />{pending ? '…' : 'Envoyer'}
         </Button>
       </form>

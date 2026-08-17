@@ -7,7 +7,7 @@ const TICKET_ID = "0190f2a8-7d32-7000-8000-000000000030";
 
 test("le widget vérifie le contact puis crée et suit une demande", async ({ page }) => {
   await mockPublicApi(page);
-  await page.goto(`/widget?integrationKey=${INTEGRATION_KEY}&parentOrigin=http%3A%2F%2Flocalhost%3A3200`);
+  await page.goto(`/widget?integrationKey=${INTEGRATION_KEY}&parentOrigin=http%3A%2F%2Flocalhost%3A3200`, { waitUntil: "networkidle" });
   await page.getByLabel("Adresse email").fill("client@example.com");
   await page.getByRole("button", { name: /Recevoir un code/i }).click();
   await page.getByLabel("Code à 6 chiffres").fill("123456");

@@ -38,18 +38,22 @@ export function WidgetShell({ integrationKey, parentOrigin }: Props) {
   }, [integrationKey, parentOrigin]);
 
   useEffect(() => {
-    if (state === "ready") postToHost(parentOrigin, { type: "RESIZE", height: authenticated ? 700 : 620 });
+    if (state !== "ready") return;
+    const sendSize = () => postToHost(parentOrigin, { type: "RESIZE", height: Math.max(360, document.documentElement.scrollHeight) });
+    sendSize();
+    const observer = new ResizeObserver(sendSize);
+    observer.observe(document.documentElement);
+    return () => observer.disconnect();
   }, [authenticated, parentOrigin, state]);
 
   if (state === "loading") return <StatePanel icon={<LoaderCircle className="size-5 animate-spin" />} text="Ouverture du support…" />;
   if (state === "blocked") return <StatePanel icon={<ShieldCheck className="size-5" />} text="Ce site n’est pas autorisé à afficher ce support." />;
   if (state === "error") return <StatePanel icon={<LifeBuoy className="size-5" />} text="Le support est temporairement indisponible." />;
-  return <main className="flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain bg-background p-4">
+  return <main className="flex min-h-dvh min-w-0 flex-col overflow-x-hidden bg-background p-4 sm:p-5">
       <h1 className="sr-only">Assistance Télécom — KAMGOKO ITSM</h1>
-      <div className="mb-5"><Brand interactive={false} /></div>
+      <div className="mb-5 flex items-center justify-between gap-3"><Brand interactive={false} /><span className="hidden text-right text-[11px] text-muted-foreground sm:block">Support sécurisé<br />sans compte requis</span></div>
       <div className="min-h-0 flex-1">{authenticated ? <WidgetPortal onOpenPortal={() => void openFullPage(integrationKey)} onSessionExpired={() => setAuthenticated(false)} /> : <VerificationCard api={widgetApi} onVerified={() => setAuthenticated(true)} />}</div>
-      <Button variant="ghost" size="sm" className="mt-3 self-center" onClick={() => void openFullPage(integrationKey)}>Ouvrir le portail complet <ExternalLink /></Button>
-      <p className="mt-1 text-center text-[11px] text-muted-foreground"><ShieldCheck className="mr-1 inline size-3" />Fallback disponible si les cookies tiers sont bloqués.</p>
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t pt-3"><p className="text-[11px] text-muted-foreground"><ShieldCheck className="mr-1 inline size-3" />Connexion protégée</p><Button variant="ghost" size="sm" className="h-8 px-2 text-xs" onClick={() => void openFullPage(integrationKey)}>Portail complet <ExternalLink /></Button></div>
     </main>;
 }
 

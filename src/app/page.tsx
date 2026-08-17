@@ -15,19 +15,19 @@ const features = [
 export default async function Home({ searchParams }: Props) {
   const { integrationKey } = await searchParams;
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen overflow-hidden bg-background">
       <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
+        <div className="flex h-16 w-full items-center justify-between gap-3 px-5 sm:px-8 lg:px-12">
           <Brand />
           <span className="hidden text-xs text-muted-foreground sm:block">Support client sécurisé — sans compte requis</span>
         </div>
       </header>
-      <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-16 lg:py-16">
-        <section>
+      <div className="grid w-full items-start gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,460px)] lg:gap-20 lg:px-12 lg:py-20 xl:grid-cols-[minmax(0,1fr)_480px]">
+        <section className="min-w-0 lg:pt-8">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary">Support client sécurisé</p>
           <h1 className="max-w-2xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">Signalez un incident. Suivez sa résolution sans friction.</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">Un espace unique pour transmettre les informations utiles, échanger avec nos équipes et suivre chaque étape de votre demande.</p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="mt-8 grid gap-3 sm:grid-cols-3 lg:max-w-5xl">
             {features.map(({ icon: Icon, title, text }) => (
               <div key={title} className="rounded-xl border bg-card p-4">
                 <span className="mb-3 grid size-9 place-items-center rounded-lg bg-muted text-foreground"><Icon className="size-4" /></span>
@@ -37,7 +37,7 @@ export default async function Home({ searchParams }: Props) {
             ))}
           </div>
         </section>
-        <div className="mx-auto w-full max-w-md lg:mx-0 lg:justify-self-end">
+        <div className="w-full lg:justify-self-end">
           <PortalVerificationCard integrationKey={integrationKey} />
         </div>
       </div>

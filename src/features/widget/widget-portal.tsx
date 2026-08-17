@@ -17,7 +17,7 @@ const date = new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium", timeStyle: 
 
 export function WidgetPortal({ onOpenPortal, onSessionExpired }: { readonly onOpenPortal: () => void; readonly onSessionExpired: () => void }) {
   const [view, setView] = useState<View>({ kind: "list" });
-  if (view.kind === "create") return <WidgetRequestForm onCancel={() => setView({ kind: "list" })} onCreated={(id) => setView({ kind: "detail", id })} />;
+  if (view.kind === "create") return <WidgetCreateView onCancel={() => setView({ kind: "list" })} onCreated={(id) => setView({ kind: "detail", id })} />;
   if (view.kind === "assistant") {
     return (
       <div className="flex h-full min-h-0 flex-col overflow-y-auto">
@@ -28,6 +28,16 @@ export function WidgetPortal({ onOpenPortal, onSessionExpired }: { readonly onOp
   }
   if (view.kind === "detail") return <WidgetTicket id={view.id} onBack={() => setView({ kind: "list" })} onSessionExpired={onSessionExpired} />;
   return <WidgetTicketList onCreate={() => setView({ kind: "create" })} onAssistant={() => setView({ kind: "assistant" })} onSelect={(id) => setView({ kind: "detail", id })} onOpenPortal={onOpenPortal} onSessionExpired={onSessionExpired} />;
+}
+
+function WidgetCreateView({ onCancel, onCreated }: { readonly onCancel: () => void; readonly onCreated: (id: string) => void }) {
+  return <div className="space-y-4">
+    <Button variant="ghost" size="sm" className="-ml-2" onClick={onCancel}><ArrowLeft />Retour à mes demandes</Button>
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+      <section className="rounded-2xl border bg-card p-4"><div className="mb-3"><h2 className="font-semibold">Besoin d’aide pour formuler ?</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">L’assistant peut vous orienter. Vous gardez toujours la main sur l’envoi.</p></div><AssistantPanel compact api={widgetApi} /></section>
+      <section className="rounded-2xl border bg-card p-4"><div className="mb-3"><h2 className="font-semibold">Créer une demande</h2><p className="mt-1 text-xs text-muted-foreground">Les champs nécessaires au traitement sont indiqués.</p></div><WidgetRequestForm onCancel={onCancel} onCreated={onCreated} /></section>
+    </div>
+  </div>;
 }
 
 function WidgetTicketList({ onCreate, onAssistant, onSelect, onOpenPortal, onSessionExpired }: { readonly onCreate: () => void; readonly onAssistant: () => void; readonly onSelect: (id: string) => void; readonly onOpenPortal: () => void; readonly onSessionExpired: () => void }) {

@@ -23,7 +23,7 @@ export function PortalShell({ children }: { readonly children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground">
       <OfflineNotice />
       <header className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
+        <div className="flex h-16 w-full items-center justify-between gap-3 px-5 sm:px-8 lg:px-12">
           <Brand href="/demandes" />
           <div className="flex items-center gap-3">
             <span className="hidden items-center gap-1.5 text-xs text-muted-foreground md:flex" role="status">
@@ -34,9 +34,9 @@ export function PortalShell({ children }: { readonly children: ReactNode }) {
           </div>
         </div>
       </header>
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-6 sm:px-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:py-10">
+      <div className="grid w-full gap-6 px-5 py-5 sm:px-8 lg:grid-cols-[230px_minmax(0,1fr)] lg:gap-12 lg:px-12 lg:py-10 xl:grid-cols-[260px_minmax(0,1fr)]">
         <aside className="overflow-x-auto lg:overflow-visible">
-          <nav aria-label="Navigation de l’espace demandeur" className="flex min-w-max gap-1 lg:min-w-0 lg:flex-col">
+          <nav aria-label="Navigation de l’espace demandeur" className="flex min-w-max gap-1 lg:min-w-0 lg:flex-col lg:rounded-2xl lg:border lg:bg-card lg:p-2">
             {links.map(({ href, label, icon: Icon }) => {
               const active = pathname === href || pathname.startsWith(`${href}/`);
               return (
