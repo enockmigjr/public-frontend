@@ -83,7 +83,7 @@ function RequestForm({ catalog, conversationId, initialDraft }: {
             <LevelField label="Urgence ressentie" value={draft.urgency} onChange={(urgency) => setDraft({ ...draft, urgency })} />
           </div>
           <label className="flex cursor-pointer items-start gap-3 rounded-xl border p-4">
-            <input type="checkbox" className="mt-1 size-4 accent-blue-700" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} />
+            <input type="checkbox" className="mt-1 size-4 accent-primary" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} />
             <span>
               <strong className="block text-sm">Je confirme l&apos;envoi de cette demande</strong>
               <span className="mt-1 block text-xs leading-5 text-muted-foreground">Les informations seront transmises au support. Vous pourrez ensuite ajouter des pièces jointes et suivre les réponses.</span>
@@ -127,7 +127,7 @@ function LevelField({ label, value, onChange }: { readonly label: string; readon
       <legend className="mb-2 text-sm font-medium">{label}</legend>
       <div className="grid grid-cols-3 gap-2">
         {levels.map((level) => (
-          <button type="button" key={level.value} aria-pressed={value === level.value} onClick={() => onChange(level.value)} className={`rounded-lg border px-2 py-2.5 text-xs font-medium transition-colors ${value === level.value ? "border-blue-700 bg-blue-50 text-blue-900" : "bg-white hover:bg-muted"}`}>{level.label}</button>
+          <button type="button" key={level.value} aria-pressed={value === level.value} onClick={() => onChange(level.value)} className={`rounded-lg border px-2 py-2.5 text-xs font-medium transition-colors ${value === level.value ? "border-primary bg-primary text-primary-foreground" : "bg-card hover:bg-muted"}`}>{level.label}</button>
         ))}
       </div>
     </fieldset>

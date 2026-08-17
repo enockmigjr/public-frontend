@@ -9,7 +9,7 @@ export default async function NewRequestPage({ searchParams }: Props) {
   return (
     <>
       <PageHeading eyebrow="Nouvel incident" title="Créer une demande" description="Posez une question à l’assistant ou remplissez directement le formulaire : les deux chemins restent disponibles." />
-      <div className="max-w-3xl">
+      <div className="max-w-5xl">
         <AssistantPanel />
         <div id="formulaire" className="scroll-mt-24">
           <RequestWizard resumeId={conversation} />

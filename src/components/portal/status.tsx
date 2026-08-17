@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import type { PublicTicket } from "@/lib/api/client";
+import { cn } from "@/lib/utils";
 
 type Status = PublicTicket["status"];
 const labels: Record<Status, string> = {
@@ -12,7 +13,7 @@ const labels: Record<Status, string> = {
 
 export function StatusBadge({ status }: { readonly status: Status }) {
   const tone = status === "WAITING_FOR_CUSTOMER" ? "bg-amber-100 text-amber-900" : status === "RESOLVED" || status === "CLOSED" ? "bg-emerald-100 text-emerald-900" : "bg-blue-100 text-blue-900";
-  return <Badge className={tone}>{labels[status]}</Badge>;
+  return <Badge className={cn(tone, "whitespace-nowrap font-medium")}>{labels[status]}</Badge>;
 }
 
 export function statusLabel(status?: Status) {

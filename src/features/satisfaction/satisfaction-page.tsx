@@ -23,7 +23,7 @@ export function SatisfactionPage({ token, ticketId }: Readonly<{ token: string; 
 
   return (
     <Centered>
-      <div className="w-full max-w-md rounded-2xl border bg-white p-6 shadow-sm">
+      <div className="w-full max-w-md rounded-2xl border bg-card p-6 shadow-sm">
         <h1 className="text-lg font-semibold">Comment s&apos;est passée votre prise en charge ?</h1>
         <p className="mt-1 text-sm text-muted-foreground">Votre retour nous aide à améliorer notre service.</p>
         <div className="mt-4 flex justify-between gap-1" role="radiogroup" aria-label="Note de satisfaction">
@@ -35,7 +35,7 @@ export function SatisfactionPage({ token, ticketId }: Readonly<{ token: string; 
               role="radio"
               onClick={() => setNote(value)}
               className={`grid size-11 place-items-center rounded-xl border text-lg font-semibold transition-colors ${
-                note >= value ? "border-blue-600 bg-blue-600 text-white" : "border-slate-200 bg-white hover:bg-slate-50"
+                note >= value ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card hover:bg-muted"
               }`}
             >
               {value}
@@ -60,5 +60,5 @@ export function SatisfactionPage({ token, ticketId }: Readonly<{ token: string; 
 }
 
 function Centered({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <main className="grid min-h-dvh place-items-center bg-slate-50 p-4">{children}</main>;
+  return <main className="grid min-h-dvh place-items-center bg-background p-4">{children}</main>;
 }

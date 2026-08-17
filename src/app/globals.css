@@ -49,38 +49,83 @@
 }
 
 :root {
-  --background: oklch(0.975 0.008 242);
-  --foreground: oklch(0.23 0.035 250);
+  color-scheme: light;
+  --surface: #ffffff;
+  --surface-subtle: #f8fafc;
+  --surface-muted: #f1f5f9;
+  --text: #172033;
+  --text-muted: #64748b;
+  --border: oklch(0.925 0.005 214.3);
+  --focus: #2563eb;
+  --success: #0f766e;
+  --warning: #a16207;
+  --danger: #b42318;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.148 0.004 228.8);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.23 0.035 250);
+  --card-foreground: oklch(0.148 0.004 228.8);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.23 0.035 250);
-  --primary: oklch(0.39 0.115 247);
-  --primary-foreground: oklch(0.99 0.002 240);
-  --secondary: oklch(0.94 0.018 238);
-  --secondary-foreground: oklch(0.31 0.07 248);
-  --muted: oklch(0.95 0.012 242);
-  --muted-foreground: oklch(0.48 0.035 248);
-  --accent: oklch(0.93 0.035 193);
-  --accent-foreground: oklch(0.31 0.075 206);
+  --popover-foreground: oklch(0.148 0.004 228.8);
+  --primary: oklch(0.218 0.008 223.9);
+  --primary-foreground: oklch(0.987 0.002 197.1);
+  --secondary: oklch(0.963 0.002 197.1);
+  --secondary-foreground: oklch(0.218 0.008 223.9);
+  --muted: oklch(0.963 0.002 197.1);
+  /* Légèrement assombri vs console (oklch 0.56 0.021 213.5) :
+     le portail pose du texte muted sur des surfaces slate-50 où ce token
+     tombe à 4.4:1 (AA). #5f6b7a conserve ≥ 4.5:1 sur blanc et slate-50. */
+  --muted-foreground: #5f6b7a;
+  --accent: oklch(0.963 0.002 197.1);
+  --accent-foreground: oklch(0.218 0.008 223.9);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.88 0.018 242);
-  --input: oklch(0.88 0.018 242);
-  --ring: oklch(0.55 0.105 244);
-  --chart-1: oklch(0.49 0.14 247);
-  --chart-2: oklch(0.62 0.12 190);
-  --chart-3: oklch(0.7 0.14 78);
-  --chart-4: oklch(0.56 0.16 22);
-  --chart-5: oklch(0.52 0.12 304);
-  --radius: 0.75rem;
-  --sidebar: oklch(0.28 0.068 250);
-  --sidebar-foreground: oklch(0.96 0.008 240);
-  --sidebar-primary: oklch(0.72 0.11 190);
-  --sidebar-primary-foreground: oklch(0.2 0.04 245);
-  --sidebar-accent: oklch(0.35 0.065 247);
-  --sidebar-accent-foreground: oklch(0.98 0.004 240);
-  --sidebar-border: oklch(1 0 0 / 14%);
-  --sidebar-ring: oklch(0.72 0.11 190);
+  --input: oklch(0.925 0.005 214.3);
+  --ring: oklch(0.723 0.014 214.4);
+  --chart-1: oklch(0.872 0.007 219.6);
+  --chart-2: oklch(0.56 0.021 213.5);
+  --chart-3: oklch(0.45 0.017 213.2);
+  --chart-4: oklch(0.378 0.015 216);
+  --chart-5: oklch(0.275 0.011 216.9);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.987 0.002 197.1);
+  --sidebar-foreground: oklch(0.148 0.004 228.8);
+  --sidebar-primary: oklch(0.218 0.008 223.9);
+  --sidebar-primary-foreground: oklch(0.987 0.002 197.1);
+  --sidebar-accent: oklch(0.963 0.002 197.1);
+  --sidebar-accent-foreground: oklch(0.218 0.008 223.9);
+  --sidebar-border: oklch(0.925 0.005 214.3);
+  --sidebar-ring: oklch(0.723 0.014 214.4);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--surface-subtle);
+}
+
+body {
+  margin: 0;
+  position: relative;
+  background: var(--surface-subtle);
+  color: var(--text);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  outline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--focus) 70%, transparent);
+}
+
+::selection {
+  background: #bfdbfe;
+  color: #172033;
 }
 
 @layer base {

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { CircleAlert, LoaderCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Brand } from "@/components/portal/brand";
 
 export function BootstrapConsumer() {
   const router = useRouter();
@@ -18,12 +19,15 @@ export function BootstrapConsumer() {
   }, [router]);
 
   if (!error) {
-    return <main className="grid min-h-dvh place-items-center p-6"><div className="flex items-center gap-3 text-sm text-muted-foreground"><LoaderCircle className="size-5 animate-spin" /><p>Reprise sécurisée de votre session…</p></div></main>;
+    return <main className="grid min-h-dvh place-items-center p-6"><div className="flex w-full max-w-sm flex-col items-center gap-6"><Brand interactive={false} /><div className="flex items-center gap-3 text-sm text-muted-foreground"><LoaderCircle className="size-5 animate-spin" /><p>Reprise sécurisée de votre session…</p></div></div></main>;
   }
   return (
     <main className="mx-auto grid min-h-dvh max-w-lg place-items-center p-6">
-      <Alert variant="destructive"><CircleAlert /><AlertTitle>Lien expiré ou déjà utilisé</AlertTitle><AlertDescription>Votre demande n’a pas été modifiée. Vérifiez à nouveau votre contact pour continuer.</AlertDescription></Alert>
-      <Button className="mt-4" onClick={() => router.replace("/")}>Revenir à la vérification</Button>
+      <div className="flex w-full flex-col items-center gap-6">
+        <Brand interactive={false} />
+        <Alert variant="destructive"><CircleAlert /><AlertTitle>Lien expiré ou déjà utilisé</AlertTitle><AlertDescription>Votre demande n’a pas été modifiée. Vérifiez à nouveau votre contact pour continuer.</AlertDescription></Alert>
+        <Button className="mt-4" onClick={() => router.replace("/")}>Revenir à la vérification</Button>
+      </div>
     </main>
   );
 }

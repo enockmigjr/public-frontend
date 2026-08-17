@@ -70,10 +70,10 @@ export function AssistantPanel(
               key={`${message.role}-${index}`}
               className={`max-w-[85%] rounded-xl border px-3 py-2 text-sm leading-5 ${
                 message.role === 'user'
-                  ? 'ml-auto bg-blue-700 text-white'
+                  ? 'ml-auto bg-primary text-primary-foreground'
                   : message.role === 'system'
                     ? 'bg-amber-50 text-amber-950'
-                    : 'bg-slate-100 text-slate-900'
+                    : 'bg-muted text-foreground'
               }`}
             >
               {message.content}
@@ -100,13 +100,13 @@ export function AssistantPanel(
         </Button>
       </form>
       {props.onOpenForm ? (
-        <Button variant="link" size="sm" className="h-auto px-0 text-blue-700" onClick={props.onOpenForm}>
+        <Button variant="link" size="sm" className="h-auto px-0 text-primary" onClick={props.onOpenForm}>
           <ClipboardList className="size-3.5" />Créer ma demande avec le formulaire
         </Button>
       ) : (
         <a
           href="#formulaire"
-          className="inline-flex items-center gap-2 text-xs font-medium text-blue-700 hover:underline"
+          className="inline-flex items-center gap-2 text-xs font-medium text-primary hover:underline"
         >
           <ClipboardList className="size-3.5" />Créer ma demande avec le formulaire
         </a>
@@ -120,7 +120,7 @@ export function AssistantPanel(
   return (
     <Card className="mb-6">
       <CardHeader className="flex-row items-center gap-3 space-y-0 pb-3">
-        <span className="grid size-9 place-items-center rounded-lg bg-blue-100 text-blue-800"><Bot className="size-5" /></span>
+        <span className="grid size-9 place-items-center rounded-lg bg-muted text-foreground"><Bot className="size-5" /></span>
         <div>
           <CardTitle className="text-base">Assistant support</CardTitle>
           <p className="text-xs text-muted-foreground">Posez une question avant de créer votre demande.</p>
